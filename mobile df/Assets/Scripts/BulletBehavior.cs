@@ -7,7 +7,7 @@ public class BulletBehavior : MonoBehaviour {
     public Bulletstat Bulletstat { get; set; }
 
     public float activeTime = 3.0f;
-    public float spawnTime;
+    
 
     public BulletBehavior()
     {
@@ -19,22 +19,24 @@ public class BulletBehavior : MonoBehaviour {
     public void Spawn()
     {
         gameObject.SetActive(true);
-        spawnTime = Time.time;
     }
 
-	void Start () {
-        Spawn();
+    private void OnEnable()
+    {
+        StartCoroutine(BulletInactive(activeTime));
+    }
+
+    IEnumerator BulletInactive(float activeTime)
+    {
+        yield return new WaitForSeconds(activeTime);
+        gameObject.SetActive(false);
+    }
+
+    void Start () {
 	}
 	
 	void Update () {
-        if(Time.time - spawnTime >= activeTime)
-        {
-            gameObject.SetActive(false);
-        }
-        else
-        {
             transform.Translate(Vector2.right * Bulletstat.speed * Time.deltaTime);
-        }
 	}
 
     private void OnTriggerEnter2D(Collider2D other)
